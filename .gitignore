@@ -1,6 +1,7 @@
 # Node.js/React
 frontend/node_modules
 frontend/build
+frontend/.env
 
 # Python/FastAPI
 backend/__pycache__
@@ -8,3 +9,4 @@ backend/.env
 
 # General
 .env
+**/.env
