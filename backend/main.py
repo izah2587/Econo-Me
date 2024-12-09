@@ -13,9 +13,10 @@ import csv
 import re
 import pandas as pd
 import openai
-from datetime import date,  datetime
-from typing import Optional, List
+from datetime import date,  datetime, timedelta
+from typing import Optional, List, Dict, Any, Union
 from fastapi.params import Query
+from typing import Optional
 
 
 # Load environment variables
@@ -523,6 +524,8 @@ async def delete_goal(goal_id: int, token: str = Depends(oauth2_scheme)):
         if conn:
             conn.close()
 
+# EXPENSES
+
 def categorize_expense(description: str) -> str:
     # This is a simple categorization. You might want to use a more sophisticated method or AI for better categorization.
     categories = {
@@ -540,10 +543,39 @@ def categorize_expense(description: str) -> str:
     return 'other'
 
 @app.post("/upload-expenses")
-async def upload_expenses(file: UploadFile = File(...), token: str = Depends(oauth2_scheme)):
+async def upload_expenses(
+    file: UploadFile = File(...),
+    update_date: Optional[str] = None,
+    token: str = Depends(oauth2_scheme)
+):
     user_payload = await verify_token(token)
     content = await file.read()
     df = pd.read_csv(StringIO(content.decode('utf-8')))
+    
+    # Validate that all dates in the file are the same
+    if 'date' not in df.columns:
+        raise HTTPException(status_code=400, detail="CSV file must contain a 'date' column")
+    
+    # Convert dates to consistent format
+    df['date'] = pd.to_datetime(df['date']).dt.date
+    unique_dates = df['date'].unique()
+    
+    if len(unique_dates) > 1:
+        raise HTTPException(
+            status_code=400, 
+            detail="All expenses in the file must be for the same date"
+        )
+    
+    file_date = unique_dates[0]
+    
+    # If updating existing date, validate it matches
+    if update_date:
+        update_date = datetime.strptime(update_date, '%Y-%m-%d').date()
+        if file_date != update_date:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File contains expenses for {file_date}, but updating date {update_date}"
+            )
     
     conn = create_connection()
     try:
@@ -556,11 +588,26 @@ async def upload_expenses(file: UploadFile = File(...), token: str = Depends(oau
             raise HTTPException(status_code=404, detail="User not found")
         user_id = user_result['user_id']
         
+        # If updating, delete existing expenses for that date
+        if update_date:
+            cursor.execute(
+                "DELETE FROM Expenses WHERE user_id = %s AND date = %s",
+                (user_id, update_date)
+            )
+        
         # Insert expenses
         for _, row in df.iterrows():
             category = categorize_expense(row['description'])
-            expense = Expense(date=row['date'], amount=row['amount'], category=category, user_id=user_id)
-            query = "INSERT INTO Expenses (date, amount, category, user_id) VALUES (%s, %s, %s, %s)"
+            expense = Expense(
+                date=file_date,
+                amount=float(row['amount']),
+                category=category,
+                user_id=user_id
+            )
+            query = """
+                INSERT INTO Expenses (date, amount, category, user_id)
+                VALUES (%s, %s, %s, %s)
+            """
             values = (expense.date, expense.amount, expense.category, expense.user_id)
             cursor.execute(query, values)
         
@@ -573,6 +620,113 @@ async def upload_expenses(file: UploadFile = File(...), token: str = Depends(oau
             cursor.close()
         if conn:
             conn.close()
+
+@app.get("/expense-dates")
+async def get_expense_dates(token: str = Depends(oauth2_scheme)):
+    user_payload = await verify_token(token)
+    conn = create_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        
+        # Get user_id
+        cursor.execute("SELECT user_id FROM Users WHERE auth0_id = %s", (user_payload["sub"],))
+        user_result = cursor.fetchone()
+        if not user_result:
+            raise HTTPException(status_code=404, detail="User not found")
+        user_id = user_result['user_id']
+        
+        # Get distinct dates of expenses
+        cursor.execute("SELECT DISTINCT date FROM Expenses WHERE user_id = %s ORDER BY date DESC", (user_id,))
+        dates = cursor.fetchall()
+        
+        return {"dates": [date['date'].isoformat() for date in dates]}
+    except Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+@app.get("/expenses/{date}")
+async def get_expenses_by_date(date: str, token: str = Depends(oauth2_scheme)):
+    user_payload = await verify_token(token)
+    conn = create_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        
+        # Get user_id
+        cursor.execute("SELECT user_id FROM Users WHERE auth0_id = %s", (user_payload["sub"],))
+        user_result = cursor.fetchone()
+        if not user_result:
+            raise HTTPException(status_code=404, detail="User not found")
+        user_id = user_result['user_id']
+        
+        # Get expenses for the specified date
+        cursor.execute("SELECT * FROM Expenses WHERE user_id = %s AND date = %s", (user_id, date))
+        expenses = cursor.fetchall()
+        
+        return {"expenses": expenses}
+    except Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+@app.put("/expenses/{expense_id}")
+async def update_expense(expense_id: int, expense: Expense, token: str = Depends(oauth2_scheme)):
+    user_payload = await verify_token(token)
+    conn = create_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        
+        # Get user_id
+        cursor.execute("SELECT user_id FROM Users WHERE auth0_id = %s", (user_payload["sub"],))
+        user_result = cursor.fetchone()
+        if not user_result:
+            raise HTTPException(status_code=404, detail="User not found")
+        user_id = user_result['user_id']
+        
+        # Update the expense
+        query = "UPDATE Expenses SET date = %s, amount = %s, category = %s WHERE expense_id = %s AND user_id = %s"
+        values = (expense.date, expense.amount, expense.category, expense_id, user_id)
+        cursor.execute(query, values)
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Expense not found or does not belong to the user")
+        
+        return {"message": "Expense updated successfully"}
+    except Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+def calculate_average_daily_spending(expenses: List[Dict]) -> float:
+    if not expenses:
+        return 0
+    total_spending = sum(expense['amount'] for expense in expenses)
+    date_range = (max(expense['date'] for expense in expenses) - min(expense['date'] for expense in expenses)).days + 1
+    return total_spending / date_range
+
+def calculate_goal_alignment(expenses: List[Dict], goals: List[Dict]) -> float:
+    if not goals:
+        return 100  # If there are no goals, we consider the user 100% aligned
+    
+    total_daily_target = sum(goal['target_amount'] / (goal['due_date'] - datetime.now().date()).days for goal in goals if goal['due_date'] > datetime.now().date())
+    avg_daily_spending = calculate_average_daily_spending(expenses)
+    
+    if total_daily_target == 0:
+        return 100 if avg_daily_spending == 0 else 0
+    
+    alignment = (1 - min(1, max(0, (avg_daily_spending - total_daily_target) / total_daily_target))) * 100
+    return round(alignment, 2)
 
 @app.get("/ai-review")
 async def get_ai_review(token: str = Depends(oauth2_scheme)):
@@ -588,36 +742,69 @@ async def get_ai_review(token: str = Depends(oauth2_scheme)):
             raise HTTPException(status_code=404, detail="User not found")
         user_id = user_result['user_id']
         
-        # Get user's expenses
-        cursor.execute("SELECT * FROM Expenses WHERE user_id = %s ORDER BY date DESC LIMIT 30", (user_id,))
+        # Get user's expenses for the last 30 days
+        thirty_days_ago = datetime.now().date() - timedelta(days=30)
+        cursor.execute("SELECT * FROM Expenses WHERE user_id = %s AND date >= %s ORDER BY date DESC", (user_id, thirty_days_ago))
         expenses = cursor.fetchall()
         
-        # Get user's goals
+        # Get user's active goals
         cursor.execute("SELECT * FROM Goals WHERE user_id = %s AND status = 'active'", (user_id,))
         goals = cursor.fetchall()
         
+        # Calculate average daily spending and goal alignment
+        avg_daily_spending = calculate_average_daily_spending(expenses)
+        goal_alignment = calculate_goal_alignment(expenses, goals)
+        
         # Prepare data for OpenAI
-        expenses_str = "\n".join([f"Date: {e['date']}, Amount: ${e['amount']}, Category: {e['category']}" for e in expenses])
-        goals_str = "\n".join([f"Goal: {g['title']}, Target: ${g['target_amount']}, Deadline: {g['due_date']}" for g in goals])
+        expenses_str = "\n".join([f"Date: {e['date']}, Amount: ${e['amount']:.2f}, Category: {e['category']}" for e in expenses])
+        goals_str = "\n".join([f"Goal: {g['title']}, Target: ${g['target_amount']:.2f}, Deadline: {g['due_date']}" for g in goals])
         
         prompt = f"""
         Analyze the following user's expenses and financial goals:
 
-        Expenses:
+        Average Daily Spending: ${avg_daily_spending:.2f}
+        Current Goal Alignment: {goal_alignment}%
+
+        Expenses (last 30 days):
         {expenses_str}
 
         Financial Goals:
         {goals_str}
 
-        Please provide a brief analysis of the user's spending habits in relation to their financial goals. 
-        Offer suggestions on how they can better align their spending with their goals. 
-        If they're doing well, offer encouragement and tips to maintain their good habits.
+        Please provide a comprehensive analysis of the user's spending habits in relation to their financial goals. 
+        Your response should include:
+
+        1. A brief overview of their current financial situation.
+        2. An explanation of their goal alignment percentage and what it means.
+        3. Specific recommendations for each goal, considering their current spending habits.
+        4. A checklist of 3-5 actionable items to improve their financial situation.
+        5. Encouragement and positive reinforcement for any good financial habits observed.
+
+        Format your response as follows:
+
+        Overview: [Your analysis here]
+
+        Goal Alignment: [Explanation of the {goal_alignment}% alignment]
+
+        Goal-specific Recommendations:
+        [List each goal and provide specific advice]
+
+        Action Checklist:
+        - [Action item 1]
+        - [Action item 2]
+        - [Action item 3]
+        - [Action item 4 (if applicable)]
+        - [Action item 5 (if applicable)]
+
+        Positive Reinforcement: [Encouragement and recognition of good habits]
+
+        Make sure to address the user in your response. Address the user as "you"
         """
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a financial advisor assistant."},
+                {"role": "system", "content": "You are a financial advisor assistant. Provide clear, actionable advice."},
                 {"role": "user", "content": prompt}
             ]
         )

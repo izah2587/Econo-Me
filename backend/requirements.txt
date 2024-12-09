@@ -1,0 +1,9 @@
+fastapi
+python-dotenv
+python-jose
+requests
+pydantic
+mysql-connector-python
+pandas
+openai
+python-multipart

@@ -10,3 +10,5 @@ backend/.env
 # General
 .env
 **/.env
+
+Dockerfile
