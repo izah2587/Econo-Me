@@ -23,8 +23,8 @@ from typing import Optional
 load_dotenv()
 
 # Auth0 configuration
-AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "dev-xgm0lup6iwjt0i8k.us.auth0.com")
-AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID", "h6VQMvtBnAn3ApXwVjiWcQSsGSHdk5hl")
+AUTH0_DOMAIN = os.getenv("REACT_APP_AUTH0_DOMAIN")
+AUTH0_CLIENT_ID = os.getenv("REACT_APP_AUTH0_CLIENT_ID")
 AUTH0_AUDIENCE = os.getenv("AUTH0_AUDIENCE", "https://api.econome.com")
 ALGORITHMS = ["RS256"]
 
@@ -137,6 +137,12 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
     except Exception:
         raise HTTPException(status_code=401, detail="Unable to parse authentication token")
     raise HTTPException(status_code=401, detail="Unable to find appropriate key")
+
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to Econo-Me!"}
+
 
 # Login endpoint
 @app.post("/login")
