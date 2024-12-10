@@ -6,11 +6,11 @@ import App from './App';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Auth0Provider
-        domain={process.env.REACT_APP_AUTH0_DOMAIN}
-        clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+        domain='dev-xgm0lup6iwjt0i8k.us.auth0.com'
+        clientId='h6VQMvtBnAn3ApXwVjiWcQSsGSHdk5hl'
         authorizationParams={{
             redirect_uri: window.location.origin,
-            audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+            audience: 'EKtYAN3Rd7RCVsNhoAPLCuZ0j9AbQoA1',
         }}
     >
         <App />
