@@ -23,9 +23,9 @@ from typing import Optional
 load_dotenv()
 
 # Auth0 configuration
-AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "dev-xgm0lup6iwjt0i8k.us.auth0.com")
-AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID", "h6VQMvtBnAn3ApXwVjiWcQSsGSHdk5hl")
-AUTH0_AUDIENCE = os.getenv("AUTH0_AUDIENCE", "https://api.econome.com")
+AUTH0_DOMAIN = os.getenv("REACT_APP_AUTH0_DOMAIN")
+AUTH0_CLIENT_ID = os.getenv("REACT_APP_AUTH0_CLIENT_ID")
+AUTH0_AUDIENCE = os.getenv("REACT_APP_AUTH0_AUDIENCE")
 ALGORITHMS = ["RS256"]
 
 # Database configuration
@@ -42,7 +42,7 @@ app = FastAPI()
 # CORS settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "https://econome-frontend-102803836636.us-central1.run.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -137,6 +137,12 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
     except Exception:
         raise HTTPException(status_code=401, detail="Unable to parse authentication token")
     raise HTTPException(status_code=401, detail="Unable to find appropriate key")
+
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to Econo-Me!"}
+
 
 # Login endpoint
 @app.post("/login")
@@ -827,5 +833,5 @@ async def startup_event():
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
