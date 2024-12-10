@@ -15,7 +15,7 @@ RUN pip install uvicorn
 COPY . .
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8080
 
 # Start FastAPI server (this should be exactly what you do when working locally)
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
