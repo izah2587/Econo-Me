@@ -11,6 +11,7 @@ const Goals = () => {
     target_amount: '',
     deadline: '',
   });
+  const [editGoal, setEditGoal] = useState(null);  
   const [error, setError] = useState(null);
 
   const fetchGoals = async () => {
@@ -19,10 +20,11 @@ const Goals = () => {
       const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/goals`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log("Fetched goals:", response.data.goals); // Log fetched data
       const allGoals = response.data.goals;
       setGoals({
-        active: allGoals.filter(goal => goal.status === 'active'),
-        completed: allGoals.filter(goal => goal.status === 'completed'),
+        active: allGoals.filter((goal) => goal.status === 'active'),
+        completed: allGoals.filter((goal) => goal.status === 'completed'),
       });
       setError(null);
     } catch (error) {
@@ -30,6 +32,7 @@ const Goals = () => {
       setError('Failed to fetch goals. Please try again later.');
     }
   };
+  
 
   useEffect(() => {
     fetchGoals();
@@ -39,6 +42,12 @@ const Goals = () => {
     setNewGoal({ ...newGoal, [e.target.name]: e.target.value });
   };
 
+  const handleEditInputChange = (e) => {
+    const updatedField = { [e.target.name]: e.target.value };
+    console.log("Updating field:", updatedField);
+    setEditGoal({ ...editGoal, ...updatedField });
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -47,13 +56,13 @@ const Goals = () => {
         title: newGoal.title,
         description: newGoal.description,
         target_amount: parseFloat(newGoal.target_amount),
-        deadline: newGoal.deadline
+        deadline: newGoal.deadline,
       };
       console.log('Sending goal data:', goalData);
       await axios.post(`${process.env.REACT_APP_API_BASE_URL}/goals`, goalData, {
         headers: { 
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
       });
       setNewGoal({ title: '', description: '', target_amount: '', deadline: '' });
@@ -77,11 +86,43 @@ const Goals = () => {
     }
   };
 
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = await getAccessTokenSilently();
+
+      // Include all fields explicitly, even if empty
+      const updatedFields = {
+        title: editGoal.title || '',
+        description: editGoal.description || '',
+        target_amount: parseFloat(editGoal.target_amount) || '',
+        deadline: editGoal.deadline || '',
+      };
+
+      console.log("Updating goal data:", updatedFields);
+
+      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/goals/${editGoal.goal_id}`, updatedFields, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Clear edit state and refresh goals
+      setEditGoal(null);
+      fetchGoals();
+    } catch (error) {
+      console.error("Error updating goal:", error);
+      setError("Failed to update goal. Please try again.");
+    }
+  };
+
+  
   return (
     <div className="goals-container">
       <h2>Goals</h2>
       {error && <div className="error">{error}</div>}
-      
+  
       <form onSubmit={handleSubmit} className="new-goal-form">
         <h3>Set New Goal</h3>
         <input
@@ -116,10 +157,10 @@ const Goals = () => {
         />
         <button type="submit">Create Goal</button>
       </form>
-
+  
       <div className="goals-list">
         <h3>Active Goals</h3>
-        {goals.active.map(goal => (
+        {goals.active.map((goal) => (
           <div key={goal.goal_id} className="goal-item">
             <h4>{goal.title}</h4>
             <p>{goal.description}</p>
@@ -127,11 +168,48 @@ const Goals = () => {
             <p>Current: ${goal.current_amount || 0}</p>
             <p>Deadline: {new Date(goal.due_date).toLocaleDateString()}</p>
             <button onClick={() => handleDelete(goal.goal_id)}>Delete</button>
+            <button onClick={() => setEditGoal(goal)}>Edit</button>
           </div>
         ))}
-
+  
+        {editGoal && (
+          <form onSubmit={handleEditSubmit} className="edit-goal-form">
+            <h3>Edit Goal</h3>
+            <input
+              type="text"
+              name="title"
+              value={editGoal.title || ""}
+              onChange={handleEditInputChange}
+              placeholder="Goal Title"
+            />
+            <textarea
+              name="description"
+              value={editGoal.description || ""}
+              onChange={handleEditInputChange}
+              placeholder="Goal Description"
+            />
+            <input
+              type="number"
+              name="target_amount"
+              value={editGoal.target_amount || ""}
+              onChange={handleEditInputChange}
+              placeholder="Target Amount"
+            />
+            <input
+              type="date"
+              name="deadline"
+              value={editGoal.deadline || ""}
+              onChange={handleEditInputChange}
+            />
+            <button type="submit">Update Goal</button>
+            <button type="button" onClick={() => setEditGoal(null)}>
+              Cancel
+            </button>
+          </form>
+        )}
+  
         <h3>Completed Goals</h3>
-        {goals.completed.map(goal => (
+        {goals.completed.map((goal) => (
           <div key={goal.goal_id} className="goal-item completed">
             <h4>{goal.title}</h4>
             <p>{goal.description}</p>
