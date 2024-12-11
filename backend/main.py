@@ -78,11 +78,12 @@ class GoalCreate(BaseModel):
     deadline: date
 
 class GoalUpdate(BaseModel):
-    status: Optional[str] = None
-    due_date: Optional[date] = None
-    goal_type: Optional[str] = None
-    current_amount: Optional[float] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
     target_amount: Optional[float] = None
+    due_date: Optional[date] = None
+    status: Optional[str] = None
+
 
 class Expense(BaseModel):
     date: date
@@ -478,13 +479,17 @@ async def update_goal(goal_id: int, goal: GoalUpdate, token: str = Depends(oauth
     conn = create_connection()
     try:
         cursor = conn.cursor(dictionary=True)
-        # First, check if the goal belongs to the user
+
+        # Check if the goal belongs to the user
         cursor.execute("SELECT * FROM Goals WHERE goal_id = %s AND auth0_id = %s", (goal_id, user_payload["sub"]))
         existing_goal = cursor.fetchone()
         if not existing_goal:
             raise HTTPException(status_code=404, detail="Goal not found or does not belong to the user")
         
-        # Update the goal
+        # Debug: Log the data received from the frontend
+        print(f"Payload received for update: {goal.dict(exclude_unset=True)}")
+
+        # Prepare update query
         update_fields = []
         values = []
         for field, value in goal.dict(exclude_unset=True).items():
@@ -494,17 +499,20 @@ async def update_goal(goal_id: int, goal: GoalUpdate, token: str = Depends(oauth
         if update_fields:
             query = f"UPDATE Goals SET {', '.join(update_fields)} WHERE goal_id = %s"
             values.append(goal_id)
+            print(f"Executing query: {query} with values: {values}")  # Debug the query and its values
             cursor.execute(query, tuple(values))
             conn.commit()
-        
+
         return {"message": "Goal updated successfully"}
     except Error as e:
+        print(f"Database error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         if cursor:
             cursor.close()
         if conn:
             conn.close()
+
 
 @app.delete("/goals/{goal_id}")
 async def delete_goal(goal_id: int, token: str = Depends(oauth2_scheme)):
