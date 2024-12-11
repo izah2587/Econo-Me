@@ -94,6 +94,7 @@ class Expense(BaseModel):
 class YesNoRequest(BaseModel):
     email: str
     response: str  # Must be 'Yes' or 'No'
+    auth0_id: str
 
 # Database connection helper
 def create_connection():
