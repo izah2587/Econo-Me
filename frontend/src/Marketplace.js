@@ -10,7 +10,7 @@ const Marketplace = () => {
   const fetchProducts = async (query = '') => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8000/products/', {
+      const response = await axios.get(`${API_URL}/products/`, {
         params: { search: query },
       });
       setItems(response.data);
@@ -28,7 +28,7 @@ const Marketplace = () => {
 
   const handleGenerateAIInsights = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/compare_prices');
+      const response = await axios.post(`${API_URL}/compare_prices`);
       setInsights(response.data);
     } catch (error) {
       console.error('Error generating AI insights:', error);
