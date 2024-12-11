@@ -562,6 +562,28 @@ async def save_yes_no(data: YesNoRequest):
         cursor.close()
         conn.close()
 
+@app.get("/api/yes_no")
+async def check_email_exists(email: str = Query(...)):
+    print(f"Checking if email exists: {email}")
+    conn = create_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        query = "SELECT 1 FROM yes_no WHERE email = %s"
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+
+        # If a record exists, return exists=True
+        if result:
+            return {"exists": True}
+        return {"exists": False}
+    except Error as e:
+        print(f"Database error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 
 
