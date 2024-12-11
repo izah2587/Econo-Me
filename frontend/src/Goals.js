@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-
+import './Goals.css'
 const Goals = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [goals, setGoals] = useState({ active: [], completed: [] });
