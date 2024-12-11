@@ -111,7 +111,7 @@ const Goals = () => {
       });
       
       await axios.put(
-        `${process.env.REACT_APP_API_BASE_URL}/goals/${editGoal.goal_id}`,
+        `https://econome-backend-102803836636.us-central1.run.app/goals/${editGoal.goal_id}`,
         updatedFields,
         {
           headers: {
