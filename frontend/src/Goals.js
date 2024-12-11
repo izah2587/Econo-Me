@@ -64,7 +64,7 @@ const Goals = () => {
         deadline: newGoal.deadline,
       };
       console.log('Sending goal data:', goalData);
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/goals`, goalData, {
+      await axios.post(`$ https://econome-backend-102803836636.us-central1.run.app/goals`, goalData, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
