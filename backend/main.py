@@ -23,9 +23,9 @@ from typing import Optional
 load_dotenv()
 
 # Auth0 configuration
-AUTH0_DOMAIN = os.getenv("REACT_APP_AUTH0_DOMAIN")
-AUTH0_CLIENT_ID = os.getenv("REACT_APP_AUTH0_CLIENT_ID")
-AUTH0_AUDIENCE = os.getenv("REACT_APP_AUTH0_AUDIENCE")
+AUTH0_DOMAIN = os.getenv("REACT_APP_AUTH0_DOMAIN", "dev-xgm0lup6iwjt0i8k.us.auth0.com")
+AUTH0_CLIENT_ID = os.getenv("REACT_APP_AUTH0_CLIENT_ID", "h6VQMvtBnAn3ApXwVjiWcQSsGSHdk5hl")
+AUTH0_AUDIENCE = os.getenv("REACT_APP_AUTH0_AUDIENCE", "EKtYAN3Rd7RCVsNhoAPLCuZ0j9AbQoA1")
 ALGORITHMS = ["RS256"]
 
 # Database configuration
