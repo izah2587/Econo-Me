@@ -19,7 +19,7 @@ const Dashboard = () => {
           if (isAuthenticated && user) {
             try {
               const token = await getAccessTokenSilently();
-              const response = await fetch('http://localhost:8000/login', {
+              const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ const Dashboard = () => {
     const fetchExpenseDates = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await axios.get('http://localhost:8000/expense-dates', {
+            const response = await axios.get(`${API_URL}/expense-dates`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setExpenseDates(response.data.dates);
@@ -58,7 +58,7 @@ const Dashboard = () => {
     const fetchExpenses = async (date) => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await axios.get(`http://localhost:8000/expenses/${date}`, {
+            const response = await axios.get(`${API_URL}/expenses/${date}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setExpenses(response.data.expenses);
@@ -88,7 +88,7 @@ const Dashboard = () => {
 
         try {
             const token = await getAccessTokenSilently();
-            const response = await axios.post('http://localhost:8000/upload-expenses', formData, {
+            const response = await axios.post(`${API_URL}/upload-expenses`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
@@ -110,7 +110,7 @@ const Dashboard = () => {
     const handleAiReview = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await axios.get('http://localhost:8000/ai-review', {
+            const response = await axios.get(`${API_URL}/ai-review`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
