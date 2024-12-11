@@ -18,26 +18,29 @@ const Goals = () => {
     try {
       const token = await getAccessTokenSilently();
       const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/goals`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Cache-Control": "no-cache",
+        },
       });
-      console.log("Fetched goals:", response.data.goals); // Log fetched data
+  
       const allGoals = response.data.goals;
       setGoals({
-        active: allGoals.filter((goal) => goal.status === 'active'),
-        completed: allGoals.filter((goal) => goal.status === 'completed'),
+        active: allGoals.filter((goal) => goal.status === "active"),
+        completed: allGoals.filter((goal) => goal.status === "completed"),
       });
-      setError(null);
     } catch (error) {
-      console.error('Error fetching goals:', error);
-      setError('Failed to fetch goals. Please try again later.');
+      console.error("Error fetching goals:", error);
+      setError("Failed to fetch goals. Please try again later.");
     }
   };
   
 
   useEffect(() => {
+    console.log("Fetching goals...");
     fetchGoals();
   }, [getAccessTokenSilently]);
-
+  
   const handleInputChange = (e) => {
     setNewGoal({ ...newGoal, [e.target.name]: e.target.value });
   };
@@ -45,7 +48,9 @@ const Goals = () => {
   const handleEditInputChange = (e) => {
     const updatedField = { [e.target.name]: e.target.value };
     console.log("Updating field:", updatedField);
-    setEditGoal({ ...editGoal, ...updatedField });
+    const updatedGoal = { ...editGoal, ...updatedField };
+    setEditGoal(updatedGoal);
+    console.log("Updated editGoal state:", updatedGoal);
   };
   
   const handleSubmit = async (e) => {
@@ -90,33 +95,41 @@ const Goals = () => {
     e.preventDefault();
     try {
       const token = await getAccessTokenSilently();
-
-      // Include all fields explicitly, even if empty
       const updatedFields = {
-        title: editGoal.title || '',
-        description: editGoal.description || '',
-        target_amount: parseFloat(editGoal.target_amount) || '',
-        deadline: editGoal.deadline || '',
+        title: editGoal.title || "",
+        description: editGoal.description || "",
+        target_amount: parseFloat(editGoal.target_amount) || 0,
+        due_date: editGoal.deadline || "",
       };
-
+  
       console.log("Updating goal data:", updatedFields);
-
-      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/goals/${editGoal.goal_id}`, updatedFields, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+      console.log("Payload sent to backend:", {
+        title: editGoal.title,
+        description: editGoal.description,
+        target_amount: parseFloat(editGoal.target_amount),
+        due_date: editGoal.deadline,
       });
+      
+      await axios.put(
+        `${process.env.REACT_APP_API_BASE_URL}/goals/${editGoal.goal_id}`,
+        updatedFields,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      // Refresh goals after confirming update
+      setTimeout(() => fetchGoals(), 500); // Add a delay
+      setEditGoal(null); // Clear edit state after refresh
 
-      // Clear edit state and refresh goals
-      setEditGoal(null);
-      fetchGoals();
     } catch (error) {
       console.error("Error updating goal:", error);
       setError("Failed to update goal. Please try again.");
     }
   };
-
   
   return (
     <div className="goals-container">
@@ -158,7 +171,7 @@ const Goals = () => {
         <button type="submit">Create Goal</button>
       </form>
   
-      <div className="goals-list">
+      <div key={JSON.stringify(goals.active)} className="goals-list">
         <h3>Active Goals</h3>
         {goals.active.map((goal) => (
           <div key={goal.goal_id} className="goal-item">
@@ -168,10 +181,21 @@ const Goals = () => {
             <p>Current: ${goal.current_amount || 0}</p>
             <p>Deadline: {new Date(goal.due_date).toLocaleDateString()}</p>
             <button onClick={() => handleDelete(goal.goal_id)}>Delete</button>
-            <button onClick={() => setEditGoal(goal)}>Edit</button>
+            <button
+              onClick={() =>
+                setEditGoal({
+                  ...goal,
+                  target_amount: goal.target_amount || '',
+                  title: goal.title || '',
+                  description: goal.description || '',
+                  deadline: goal.due_date || '',
+                })
+              }
+            >
+              Edit
+            </button>
           </div>
         ))}
-  
         {editGoal && (
           <form onSubmit={handleEditSubmit} className="edit-goal-form">
             <h3>Edit Goal</h3>
