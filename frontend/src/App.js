@@ -12,63 +12,68 @@ const App = () => {
 
   if (isLoading) {
     return (
-      <div className="App">
-        <div className="container text-center">
-          <div className="card">
-            <h2>Loading...</h2>
-          </div>
-        </div>
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
       </div>
     );
   }
 
   return (
     <Router>
-      <div className="App">
-        <nav className="navbar">
-          <div className="navbar-container">
-            <Link to="/" className="brand">
-              <h1>EconoMe</h1>
-            </Link>
-            <div className="nav-links">
-              {isAuthenticated ? (
-                <>
-                  <Link to="/dashboard" className="nav-link">Dashboard</Link>
-                  <Link to="/marketplace" className="nav-link">Marketplace</Link>
-                  <Link to="/goals" className="nav-link">Goals</Link>
-                  <Link to="/profile" className="nav-link">Profile</Link>
-                  <button onClick={() => logout({ returnTo: window.location.origin })} className="btn btn-secondary">
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <button onClick={() => loginWithRedirect()} className="btn btn-primary">
-                  Login/Register
+      <div className="app-container">
+        {!isAuthenticated && (
+          <div className="landing-page">
+            <nav className="landing-nav">
+              <Link to="/" className="logo">EconoMe</Link>
+              <button onClick={() => loginWithRedirect()} className="login-button">
+                Login/Signup
+              </button>
+            </nav>
+            <div className="hero-content">
+              <div className="hero-text">
+                <h1>
+                  Tracking Expenses,<br />
+                  Hitting Goals—Sound<br />
+                  Like a Plan?
+                </h1>
+                <button onClick={() => loginWithRedirect()} className="get-started-button">
+                  Get Started
                 </button>
-              )}
+              </div>
+              <div className="hero-image">
+                <img src="/finance.png" alt="Financial Planning" />
+              </div>
             </div>
           </div>
-        </nav>
+        )}
 
-        <div className="container">
-          {isAuthenticated ? (
-            <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/goals" element={<Goals />} />
-              <Route path="/" element={<Navigate to="/dashboard" />} />
-            </Routes>
-          ) : (
-            <div className="welcome-card">
-              <h1>Welcome to EconoMe</h1>
-              <p>Your personal finance companion for smarter budgeting and wealth management.</p>
-              <button onClick={() => loginWithRedirect()} className="btn btn-primary">
-                Get Started
-              </button>
-            </div>
-          )}
-        </div>
+        {isAuthenticated && (
+          <>
+            <nav className="app-nav">
+              <div className="nav-content">
+                <Link to="/" className="logo">EconoMe</Link>
+                <div className="nav-links">
+                  <Link to="/dashboard">Dashboard</Link>
+                  <Link to="/marketplace">Marketplace</Link>
+                  <Link to="/goals">Goals</Link>
+                  <Link to="/profile">Profile</Link>
+                  <button onClick={() => logout({ returnTo: window.location.origin })} className="logout-button">
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </nav>
+            <main className="main-content">
+              <Routes>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/goals" element={<Goals />} />
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+              </Routes>
+            </main>
+          </>
+        )}
       </div>
     </Router>
   );
