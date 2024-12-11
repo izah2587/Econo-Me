@@ -91,6 +91,10 @@ class Expense(BaseModel):
     category: str
     user_id: int
 
+class YesNoRequest(BaseModel):
+    email: str
+    response: str  # Must be 'Yes' or 'No'
+
 # Database connection helper
 def create_connection():
     try:
@@ -537,6 +541,28 @@ async def delete_goal(goal_id: int, token: str = Depends(oauth2_scheme)):
             cursor.close()
         if conn:
             conn.close()
+
+@app.post("/api/yes_no")
+async def save_yes_no(data: YesNoRequest):
+    conn = create_connection()
+    try:
+        cursor = conn.cursor()
+        sql = """
+            INSERT INTO yes_no (auth0_id, email, response)
+            VALUES (%s, %s, %s)
+        """
+        values = (data.auth0_id, data.email, data.response)
+        cursor.execute(sql, values)
+        conn.commit()
+        return {"message": "Response saved successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
 
 # EXPENSES
 
