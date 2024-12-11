@@ -39,8 +39,8 @@ const Profile = () => {
     return (
         <div className="profile">
             <h2>Profile</h2>
-            <p><strong>ID:</strong> {profile.id}</p>
-            <p><strong>Auth0 ID:</strong> {profile.auth0_id}</p>
+            {/* <p><strong>ID:</strong> {profile.id}</p>
+            <p><strong>Auth0 ID:</strong> {profile.auth0_id}</p> */}
             <p><strong>Name:</strong> {profile.name}</p>
             <p><strong>Email:</strong> {profile.email}</p>
         </div>
