@@ -11,11 +11,15 @@ const App = () => {
   const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0();
 
   if (isLoading) {
-    return <div className="App">
-      <div className="container">
-        <div className="card">Loading...</div>
+    return (
+      <div className="App">
+        <div className="container text-center">
+          <div className="card">
+            <h2>Loading...</h2>
+          </div>
+        </div>
       </div>
-    </div>;
+    );
   }
 
   return (
@@ -23,24 +27,26 @@ const App = () => {
       <div className="App">
         <nav className="navbar">
           <div className="navbar-container">
-            <Link to="/" className="nav-link">
-              <h1 className="text-2xl">EconoMe</h1>
+            <Link to="/" className="brand">
+              <h1>EconoMe</h1>
             </Link>
-            {isAuthenticated ? (
-              <div className="nav-links">
-                <Link to="/dashboard" className="nav-link">Dashboard <br/></Link>
-                <Link to="/marketplace" className="nav-link">Marketplace <br/> </Link>
-                <Link to="/goals" className="nav-link">Goals <br/></Link>
-                <Link to="/profile" className="nav-link">Profile<br/> <br/></Link>
-                <button onClick={() => logout({ returnTo: window.location.origin })} className="btn">
-                  Logout
+            <div className="nav-links">
+              {isAuthenticated ? (
+                <>
+                  <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                  <Link to="/marketplace" className="nav-link">Marketplace</Link>
+                  <Link to="/goals" className="nav-link">Goals</Link>
+                  <Link to="/profile" className="nav-link">Profile</Link>
+                  <button onClick={() => logout({ returnTo: window.location.origin })} className="btn btn-secondary">
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => loginWithRedirect()} className="btn btn-primary">
+                  Login/Register
                 </button>
-              </div>
-            ) : (
-              <button onClick={() => loginWithRedirect()} className="btn">
-                Login/Register
-              </button>
-            )}
+              )}
+            </div>
           </div>
         </nav>
 
@@ -54,10 +60,10 @@ const App = () => {
               <Route path="/" element={<Navigate to="/dashboard" />} />
             </Routes>
           ) : (
-            <div className="card">
-              <h1 className="text-2xl">Welcome to EconoMe</h1>
+            <div className="welcome-card">
+              <h1>Welcome to EconoMe</h1>
               <p>Your personal finance companion for smarter budgeting and wealth management.</p>
-              <button onClick={() => loginWithRedirect()} className="btn">
+              <button onClick={() => loginWithRedirect()} className="btn btn-primary">
                 Get Started
               </button>
             </div>
