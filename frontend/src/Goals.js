@@ -17,7 +17,7 @@ const Goals = () => {
   const fetchGoals = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await axios.get(`$ https://econome-backend-102803836636.us-central1.run.app/goals`, {
+      const response = await axios.get(`https://econome-backend-102803836636.us-central1.run.app/goals`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Cache-Control": "no-cache",
