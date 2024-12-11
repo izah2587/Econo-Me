@@ -17,6 +17,12 @@ from datetime import date,  datetime, timedelta
 from typing import Optional, List, Dict, Any, Union
 from fastapi.params import Query
 from typing import Optional
+# from mailersend import emails
+# import schedule
+# import time
+# from apscheduler.schedulers.background import BackgroundScheduler
+# import logging
+
 
 
 # Load environment variables
@@ -53,6 +59,12 @@ oauth2_scheme = OAuth2AuthorizationCodeBearer(
     authorizationUrl=f"https://{AUTH0_DOMAIN}/authorize",
     tokenUrl=f"https://{AUTH0_DOMAIN}/oauth/token",
 )
+
+# # MailerSend API Key
+# MAILERSEND_API_KEY = os.getenv("EMAIL_API")  # Replace with your API Key
+# FROM_EMAIL = "economeupdate@gmail.com"  # Replace with your sender email
+# FROM_NAME = "EconoMe"  # Replace with your desired sender name
+
 
 # Pydantic models
 class UserLogin(BaseModel):
@@ -149,6 +161,58 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
 async def root():
     return {"message": "Welcome to Econo-Me!"}
 
+
+# logging.basicConfig(level=logging.INFO)
+
+# def send_email(to_email, subject, content):
+#     mailer = emails.NewEmail(MAILERSEND_API_KEY)
+#     try:
+#         response = mailer.send(
+#             recipients=[to_email],
+#             sender=f"{FROM_NAME} <{FROM_EMAIL}>",
+#             subject=subject,
+#             html_content=content
+#         )
+#         logging.info(f"Email sent to {to_email}: Status {response.status_code}")
+#     except Exception as e:
+#         logging.error(f"Error sending email to {to_email}: {str(e)}")
+
+# # Fetch Emails and Send Emails
+# def fetch_and_send_emails():
+#     conn = create_connection()
+#     cursor = conn.cursor(dictionary=True)
+#     try:
+#         # Query emails where users opted in
+#         cursor.execute("SELECT email FROM yes_no WHERE response = 'Yes'")
+#         emails = cursor.fetchall()
+
+#         for email_row in emails:
+#             send_email(
+#                 to_email=email_row['email'],
+#                 subject="Daily Reminder to Track Your Expenses!",
+#                 content="<p>This is your daily reminder to track your expenses!</p>"
+#             )
+#     except Exception as e:
+#         logging.error(f"Error fetching emails: {str(e)}")
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(fetch_and_send_emails, "cron", hour=9)  # Run at 9:00 AM daily
+# scheduler.start()
+
+# @app.post("/send-email")
+# async def send_email_endpoint(email: str):
+#     try:
+#         send_email(
+#             to_email=email,
+#             subject="Test Email",
+#             content="<p>This is a test email sent from Econo-Me application.</p>"
+#         )
+#         return {"message": f"Email sent successfully to {email}"}
+#     except Exception as e:
+#         return {"error": f"Failed to send email: {str(e)}"}
 
 # Login endpoint
 @app.post("/login")
