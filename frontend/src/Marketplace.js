@@ -50,7 +50,6 @@ const Marketplace = () => {
 
   return (
     <div>
-      <h2 className="text-2xl">EconoMe Marketplace</h2>
       <div className="search-container">
         <input
           type="text"

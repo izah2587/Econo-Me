@@ -17,6 +17,7 @@ from datetime import date,  datetime, timedelta
 from typing import Optional, List, Dict, Any, Union
 from fastapi.params import Query
 from typing import Optional
+from collections import defaultdict
 
 
 # Load environment variables
@@ -400,6 +401,8 @@ async def compare_prices():
         return {"summary": summary}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# for the charts...
 
 # GOALS
 
