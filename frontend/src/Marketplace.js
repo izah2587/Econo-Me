@@ -123,19 +123,24 @@ const Marketplace = () => {
       )}
 
       {/* AI Insights Section */}
-      <div className="ai-section">
-        <img src="/ai_bot.jpg" alt="AI Assistant" className="ai-buddy-icon" />
-        <button className="ai-insights-button" onClick={handleGenerateAIInsights}>
-          GET AI INSIGHTS
-        </button>
-      </div>
+      {/* AI Insights Section */}
+<div className="ai-section">
+  <img src="/ai_bot.jpg" alt="AI Assistant" className="ai-buddy-icon" />
+  <button className="ai-insights-button" onClick={handleGenerateAIInsights}>
+    GET AI INSIGHTS
+  </button>
+</div>
 
-      {insights && (
-        <div className="insights-card">
-          <h3>AI Insights</h3>
-          <p>{insights.summary}</p>
-        </div>
-      )}
+{insights && (
+  <div className="insights-card">
+    <h3>AI Insights</h3>
+    <div className="insights-summary">
+      {insights.summary.split("\n").map((line, index) => (
+        <p key={index}>{line}</p>
+      ))}
+    </div>
+  </div>
+)}
     </div>
   );
 };
