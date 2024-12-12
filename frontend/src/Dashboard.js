@@ -211,63 +211,50 @@ const Dashboard = () => {
         isAuthenticated && (
             <div className="dashboard-container">
                 <main className="main-content">
-                    <div className="left-section">
-                        <div className="ai-section">
-                            <img src="/ai_bot.jpg" alt="AI Bot" className="ai-bot" />
-                            <button className="ai-review-button" onClick={handleAiReview}>
-                                GET AI REVIEW!
-                            </button>
+                    {/* Charts Section */}
+                    <div className="charts-section">
+                        <div className="weekly-averages">
+                            <h2>YOUR WEEKLY AVERAGES</h2>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart
+                                    layout="vertical"
+                                    data={weeklyData}
+                                    margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis type="number" unit="%" />
+                                    <YAxis dataKey="category" type="category" />
+                                    <Tooltip />
+                                    <Bar dataKey="percentage" fill="#45B7D1" />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
-                        
-                        {aiReview && (
-                            <div className="ai-response">
-                                <p>{aiReview}</p>
-                            </div>
-                        )}
 
-                        <div className="charts-section">
-                            <div className="weekly-averages">
-                                <h2>YOUR WEEKLY AVERAGES</h2>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart
-                                        layout="vertical"
-                                        data={weeklyData}
-                                        margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
+                        <div className="daily-average">
+                            <h2>Daily Average</h2>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <PieChart>
+                                    <Pie
+                                        data={dailyData}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        outerRadius={100}
+                                        fill="#8884d8"
+                                        dataKey="value"
+                                        nameKey="category"
                                     >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis type="number" unit="%" />
-                                        <YAxis dataKey="category" type="category" />
-                                        <Tooltip />
-                                        <Bar dataKey="percentage" fill="#45B7D1" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
-
-                            <div className="daily-average">
-                                <h2>Daily Average</h2>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <PieChart>
-                                        <Pie
-                                            data={dailyData}
-                                            cx="50%"
-                                            cy="50%"
-                                            labelLine={false}
-                                            outerRadius={100}
-                                            fill="#8884d8"
-                                            dataKey="value"
-                                            nameKey="category"
-                                        >
-                                            {dailyData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip content={<CustomTooltip />} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
+                                        {dailyData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip content={<CustomTooltip />} />
+                                </PieChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
 
+                    {/* Upload Expenses Section */}
                     <div className="right-section">
                         <div className="dates-section">
                             {expenseDates.map(date => (
@@ -311,6 +298,20 @@ const Dashboard = () => {
                             <button className="nav-arrow">←</button>
                             <button className="nav-arrow">→</button>
                         </div>
+                    </div>
+
+                    {/* AI Review Section */}
+                    <div className="ai-section">
+                        <img src="/ai_bot.jpg" alt="AI Bot" className="ai-bot" />
+                        <button className="ai-review-button" onClick={handleAiReview}>
+                            GET AI REVIEW!
+                        </button>
+                        
+                        {aiReview && (
+                            <div className="ai-response">
+                                <p>{aiReview}</p>
+                            </div>
+                        )}
                     </div>
                 </main>
 
