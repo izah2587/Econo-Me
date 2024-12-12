@@ -55,6 +55,13 @@ const Marketplace = () => {
       <button className="btn" onClick={handleGenerateAIInsights}>
         Generate AI Insights
       </button>
+
+      {insights && (
+        <div className="card">
+          <h3 className="text-2xl">AI Insights</h3>
+          <p>{insights.summary}</p>
+        </div>
+      )}
       <div className="search-container">
         <input
           type="text"
@@ -88,13 +95,6 @@ const Marketplace = () => {
         </div>
       )}
 
-
-      {insights && (
-        <div className="card">
-          <h3 className="text-2xl">AI Insights</h3>
-          <p>{insights.summary}</p>
-        </div>
-      )}
     </div>
   );
 };
