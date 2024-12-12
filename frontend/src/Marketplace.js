@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './Marketplace.css';
 
 const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -49,7 +50,11 @@ const Marketplace = () => {
 
   return (
     <div className="card">
-      <h2 className="text-2xl">EconoMe Marketplace</h2>
+      <h2 className="text-2xl">Marketplace</h2>
+      <p> We extract prices from multiple sources every day to find out where the best value is. Try out our AI Insight Generator below!</p>
+      <button className="btn" onClick={handleGenerateAIInsights}>
+        Generate AI Insights
+      </button>
       <div className="search-container">
         <input
           type="text"
@@ -72,6 +77,7 @@ const Marketplace = () => {
               {itemsToDisplay.map((item, index) => (
                 <li key={index} className="transaction-item">
                   <span>{item.product_name}</span>
+                  <span>{item.store_name}</span>
                   <span className="positive">${item.price}</span>
                 </li>
               ))}
@@ -82,9 +88,6 @@ const Marketplace = () => {
         </div>
       )}
 
-      <button className="btn" onClick={handleGenerateAIInsights}>
-        Generate AI Insights
-      </button>
 
       {insights && (
         <div className="card">
