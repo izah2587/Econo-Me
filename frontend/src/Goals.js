@@ -61,6 +61,7 @@ const Goals = () => {
         title: newGoal.title,
         description: newGoal.description,
         target_amount: parseFloat(newGoal.target_amount),
+        current_amount: parseFloat(newGoal.current_amount),
         deadline: newGoal.deadline,
       };
       console.log('Sending goal data:', goalData);
@@ -107,6 +108,7 @@ const Goals = () => {
         title: editGoal.title,
         description: editGoal.description,
         target_amount: parseFloat(editGoal.target_amount),
+        current_amount: parseFloat(editGoal.current),
         due_date: editGoal.deadline,
       });
       
@@ -161,6 +163,15 @@ const Goals = () => {
           placeholder="Target Amount"
           required
         />
+        <input
+          type="number"
+          name="target_amount"
+          value={newGoal.current_amount}
+          onChange={handleInputChange}
+          placeholder="Current Amount"
+          required
+        />
+        current_amount
         <input
           type="date"
           name="deadline"
@@ -218,6 +229,13 @@ const Goals = () => {
               value={editGoal.target_amount || ""}
               onChange={handleEditInputChange}
               placeholder="Target Amount"
+            />
+            <input
+              type="number"
+              name="current_amount"
+              value={editGoal.current_amount || ""}
+              onChange={handleEditInputChange}
+              placeholder="Current Amount"
             />
             <input
               type="date"
