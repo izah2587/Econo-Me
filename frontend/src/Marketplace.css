@@ -1,125 +1,173 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
+.marketplace-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
   font-family: 'Poppins', sans-serif;
-  background-color: #f4f7fa;
-  color: #333;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-.text-2xl {
-    color: #3B95B0;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+.marketplace-title {
+  color: #0B6E7D;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.search-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.search-container {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+  border: 2px solid #E5E7EB;
+  border-radius: 50px;
+  background-color: #F9FAFB;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3B95B0;
+  box-shadow: 0 0 0 3px rgba(59, 149, 176, 0.1);
+}
+
+.search-button {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #3B95B0;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #0B6E7D;
+}
+
+.items-container {
+  margin: 2rem 0;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.transaction-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #E5E7EB;
+  transition: background-color 0.2s ease;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-item:hover {
+  background-color: #F9FAFB;
+}
+
+.positive {
+  color: #7BC8A4;
+  font-weight: 600;
+}
+
+.ai-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.ai-buddy-icon {
+  width: 160px;
+  height: 160px;
+}
+
+.ai-insights-button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #0B6E7D;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ai-insights-button:hover {
+  background-color: #095A66;
+  transform: translateY(-1px);
+}
+
+.insights-card {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.insights-card h3 {
+  color: #0B6E7D;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 2rem;
+  color: #3B95B0;
+  font-size: 1.1rem;
+}
+
+.no-items {
+  text-align: center;
+  color: #6B7280;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .marketplace-title {
+    font-size: 2rem;
+    padding: 0 1rem;
   }
 
-p {
-  font-size: 16px;
-  color: #666;
-  line-height: 1.6;
-  padding: 20px;
-}
-/* Card Container */
-.card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 20px;
-    max-width: 1200px;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
-  }
-  
-  /* Items List */
-  .items-container {
-    margin-top: 20px;
-  }
-  
-  .transaction-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .transaction-item {
-    display: flex;
-    justify-content: space-between; /* Distribute the space */
-    align-items: center; /* Vertically align the items */
-    padding: 12px 16px;
-    margin: 10px 0;
-    background-color: #fafafa;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .transaction-item:hover {
-    transform: translateY(-3px);
-    background-color: #f1f1f1;
-  }
-  
-  .transaction-item span {
-    font-size: 18px;
-    margin: 0 10px; /* Add space between the spans */
-  }
-  
-  /* Left-align the store name */
-  .transaction-item span:nth-child(2) {
-    text-align: right;
-    flex-grow: 1; /* Take up remaining space */
-  }
-  
-  .positive {
-    color: #7BC8A4;
-    font-weight: 600;
-    text-align: right; /* Align price to the right */
-  }
-  
-  /* Search Container */
   .search-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    justify-content: center;
+    flex-direction: column;
+    padding: 0 1rem;
   }
-  
-  .input {
-    width: 300px;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    transition: border-color 0.3s ease;
-    box-sizing: border-box;
+
+  .search-button {
+    width: 100%;
   }
-  
-  .input:focus {
-    border-color: #3B95B0;
-    outline: none;
-  }
-  
-  .btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #3B95B0;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn:hover {
-    background-color: #2b7b99;
-  }
-  
+}
+

@@ -8,7 +8,6 @@ const Marketplace = () => {
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Determine the API URL based on the current hostname
   const API_URL = window.location.hostname === 'localhost' 
     ? 'http://localhost:8000'
     : 'https://econome-backend-102803836636.us-central1.run.app';
@@ -28,9 +27,6 @@ const Marketplace = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const handleGenerateAIInsights = async () => {
     try {
@@ -42,53 +38,59 @@ const Marketplace = () => {
     }
   };
 
-  const itemsToDisplay = searchTerm
-    ? items.filter((item) =>
-        item.product_name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : items;
+  const itemsToDisplay = items.filter((item) =>
+    item.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div>
-      <div className="search-container">
-        <input
-          type="text"
-          className="input"
-          placeholder="Search for items..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button className="btn" onClick={() => fetchProducts(searchTerm)}>
-          Search
+    <div className="marketplace-container">
+      <h1 className="marketplace-title">
+        Find the best prices with EconoMart and our AI buddy!!
+      </h1>
+
+      <div className="search-section">
+        <div className="search-container">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className="search-button" onClick={() => searchTerm.trim() && fetchProducts(searchTerm)}>
+            Search
+          </button>
+        </div>
+      </div>
+
+      {loading && <div className="loading-container">Loading...</div>}
+{!loading && items.length > 0 && (
+  <div className="items-container">
+    {itemsToDisplay.length > 0 ? (
+      <ul className="transaction-list">
+        {itemsToDisplay.map((item, index) => (
+          <li key={index} className="transaction-item">
+            <span>{item.product_name}</span>
+            <span className="positive">${item.price}</span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="no-items">No items found.</p>
+    )}
+  </div>
+)}
+
+      <div className="ai-section">
+        <img src="/ai_bot.jpg" alt="AI Assistant" className="ai-buddy-icon" />
+        <button className="ai-insights-button" onClick={handleGenerateAIInsights}>
+          GET AI INSIGHTS
         </button>
       </div>
 
-      {loading ? (
-        <div className="card">Loading...</div>
-      ) : (
-        <div className="items-container">
-          {itemsToDisplay.length > 0 ? (
-            <ul className="transaction-list">
-              {itemsToDisplay.map((item, index) => (
-                <li key={index} className="transaction-item">
-                  <span>{item.product_name}</span>
-                  <span className="positive">${item.price}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No items found.</p>
-          )}
-        </div>
-      )}
-
-      <button className="btn" onClick={handleGenerateAIInsights}>
-        Generate AI Insights
-      </button>
-
       {insights && (
-        <div className="card">
-          <h3 className="text-2xl">AI Insights</h3>
+        <div className="insights-card">
+          <h3>AI Insights</h3>
           <p>{insights.summary}</p>
         </div>
       )}
