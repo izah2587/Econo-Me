@@ -5,14 +5,18 @@ import './Marketplace.css';
 const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [items, setItems] = useState([]);
+  const [sortedItems, setSortedItems] = useState([]);
+  const [sortOrder, setSortOrder] = useState(''); // Sort: 'asc' or 'desc'
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Determine the API URL based on the current hostname
-  const API_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:8000'
-    : 'https://econome-backend-102803836636.us-central1.run.app';
+  const API_URL =
+    window.location.hostname === 'localhost'
+      ? 'http://localhost:8000'
+      : 'https://econome-backend-102803836636.us-central1.run.app';
 
+  // Fetch products from the API
   const fetchProducts = async (query = '') => {
     setLoading(true);
     try {
@@ -20,6 +24,7 @@ const Marketplace = () => {
         params: { search: query },
       });
       setItems(response.data);
+      setSortedItems(response.data); // Default sorted items
     } catch (error) {
       console.error('Error fetching products:', error);
       alert('Failed to fetch products. Please try again.');
@@ -32,6 +37,18 @@ const Marketplace = () => {
     fetchProducts();
   }, []);
 
+  // Sort the items based on the selected order
+  const handleSortChange = (order) => {
+    setSortOrder(order);
+    if (order === 'asc') {
+      setSortedItems([...items].sort((a, b) => a.price - b.price));
+    } else if (order === 'desc') {
+      setSortedItems([...items].sort((a, b) => b.price - a.price));
+    } else {
+      setSortedItems(items); // Reset to the default order
+    }
+  };
+
   const handleGenerateAIInsights = async () => {
     try {
       const response = await axios.post(`${API_URL}/compare_prices`);
@@ -42,11 +59,11 @@ const Marketplace = () => {
     }
   };
 
-  const itemsToDisplay = searchTerm
-    ? items.filter((item) =>
+  const filteredItems = searchTerm
+    ? sortedItems.filter((item) =>
         item.product_name.toLowerCase().includes(searchTerm.toLowerCase())
       )
-    : items;
+    : sortedItems;
 
   return (
     <div>
@@ -61,18 +78,27 @@ const Marketplace = () => {
         <button className="btn" onClick={() => fetchProducts(searchTerm)}>
           Search
         </button>
+        <select
+          className="input"
+          value={sortOrder}
+          onChange={(e) => handleSortChange(e.target.value)}
+        >
+          <option value="">Sort by Price</option>
+          <option value="asc">Lowest to Highest</option>
+          <option value="desc">Highest to Lowest</option>
+        </select>
       </div>
 
       {loading ? (
         <div className="card">Loading...</div>
       ) : (
         <div className="items-container">
-          {itemsToDisplay.length > 0 ? (
+          {filteredItems.length > 0 ? (
             <ul className="transaction-list">
-              {itemsToDisplay.map((item, index) => (
+              {filteredItems.map((item, index) => (
                 <li key={index} className="transaction-item">
                   <span>{item.product_name}</span>
-                  <span className="positive">${item.price}</span>
+                  <span className="positive">${item.price.toFixed(2)}</span>
                 </li>
               ))}
             </ul>
@@ -97,4 +123,3 @@ const Marketplace = () => {
 };
 
 export default Marketplace;
-
