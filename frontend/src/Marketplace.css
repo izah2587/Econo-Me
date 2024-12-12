@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
+/* Marketplace Container */
 .marketplace-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -8,6 +7,7 @@
   font-family: 'Poppins', sans-serif;
 }
 
+/* Title */
 .marketplace-title {
   color: #0B6E7D;
   font-size: 2.5rem;
@@ -16,6 +16,7 @@
   margin-bottom: 3rem;
 }
 
+/* Search Section */
 .search-section {
   display: flex;
   justify-content: center;
@@ -23,25 +24,26 @@
 }
 
 .search-container {
-  width: 100%;
-  max-width: 800px;
   display: flex;
   gap: 1rem;
   justify-content: center;
+  align-items: center;
 }
 
-.search-input {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
+.search-input,
+.sort-dropdown {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
   border: 2px solid #E5E7EB;
   border-radius: 50px;
   background-color: #F9FAFB;
+  color: #333;
   transition: all 0.3s ease;
-  margin:0;
+  cursor: pointer;
 }
 
-.search-input:focus {
+.search-input:focus,
+.sort-dropdown:focus {
   outline: none;
   border-color: #3B95B0;
   box-shadow: 0 0 0 3px rgba(59, 149, 176, 0.1);
@@ -63,18 +65,18 @@
   background-color: #0B6E7D;
 }
 
+/* Items List */
 .items-container {
-  margin: 2rem 0;
+  margin-top: 2rem;
+  padding: 1.5rem;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  padding: 1.5rem;
 }
 
 .transaction-list {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .transaction-item {
@@ -86,12 +88,20 @@
   transition: background-color 0.2s ease;
 }
 
-.transaction-item:last-child {
-  border-bottom: none;
-}
-
 .transaction-item:hover {
   background-color: #F9FAFB;
+}
+
+.product-link {
+  color: #0B6E7D;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.product-link:hover {
+  color: #3B95B0;
+  text-decoration: underline;
 }
 
 .positive {
@@ -99,6 +109,7 @@
   font-weight: 600;
 }
 
+/* AI Insights */
 .ai-section {
   display: flex;
   align-items: center;
@@ -108,8 +119,8 @@
 }
 
 .ai-buddy-icon {
-  width: 160px;
-  height: 160px;
+  width: 120px;
+  height: 120px;
 }
 
 .ai-insights-button {
@@ -117,58 +128,27 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: white;
-  background-color: #0B6E7D;
+  background-color: #3B95B0;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .ai-insights-button:hover {
   background-color: #095A66;
-  transform: translateY(-1px);
-}
-
-.insights-card {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.insights-card h3 {
-  color: #0B6E7D;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.loading-container {
-  text-align: center;
-  padding: 2rem;
-  color: #3B95B0;
-  font-size: 1.1rem;
+  transform: translateY(-2px);
 }
 
 .no-items {
   text-align: center;
   color: #6B7280;
+  font-size: 1.1rem;
   padding: 2rem;
 }
 
-@media (max-width: 768px) {
-  .marketplace-title {
-    font-size: 2rem;
-    padding: 0 1rem;
-  }
-
-  .search-container {
-    flex-direction: column;
-    padding: 0 1rem;
-  }
-
-  .search-button {
-    width: 100%;
-  }
+.loading-container {
+  text-align: center;
+  color: #3B95B0;
+  font-size: 1.1rem;
 }
-
