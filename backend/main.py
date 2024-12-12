@@ -841,7 +841,7 @@ async def get_ai_review(token: str = Depends(oauth2_scheme)):
         Your response should include:
 
         1. A brief overview of their current financial situation.
-        2. An explanation of their goal alignment percentage and what it means.
+        2. An explanation of their goal alignment percentage and what it means. calculate the goal alignment and give a specific value like Goal Alignment: 75%.
         3. Specific recommendations for each goal, considering their current spending habits.
         4. A checklist of 3-5 actionable items to improve their financial situation.
         5. Encouragement and positive reinforcement for any good financial habits observed.
