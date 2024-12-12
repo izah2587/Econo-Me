@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './Marketplace.css';
 
 const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,7 +49,7 @@ const Marketplace = () => {
     : items;
 
   return (
-    <div className="card">
+    <div>
       <h2 className="text-2xl">EconoMe Marketplace</h2>
       <div className="search-container">
         <input

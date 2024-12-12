@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import './Goals.css'
 
 const Goals = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -133,11 +134,10 @@ const Goals = () => {
   
   return (
     <div className="goals-container">
-      <h2>Goals</h2>
       {error && <div className="error">{error}</div>}
+      <h3>Set New Goal</h3>
   
       <form onSubmit={handleSubmit} className="new-goal-form">
-        <h3>Set New Goal</h3>
         <input
           type="text"
           name="title"

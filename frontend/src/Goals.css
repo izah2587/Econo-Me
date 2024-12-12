@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+
+
+body {
+ margin: 0;
+ font-family: 'Poppins', sans-serif;
+ -webkit-font-smoothing: antialiased;
+ -moz-osx-font-smoothing: grayscale;
+ background: white;
+ color: #333;
+}
+
+
+/* General container for Goals */
+.goals-container {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 2rem;
+ background-color: white;
+}
+
+
+h2 {
+ color: #3b95b0;
+ font-size: 2.5rem;
+ font-weight: 700;
+ margin-bottom: 1.5rem;
+}
+
+
+/* Error Message */
+.error {
+ background-color: #f8d7da;
+ color: #721c24;
+ padding: 0.5rem 1rem;
+ border: 1px solid #f5c6cb;
+ margin-bottom: 1rem;
+ border-radius: 4px;
+}
+
+
+/* Goal Item Card */
+.goal-item {
+ background-color: #fff;
+ padding: 1.5rem;
+ border-radius: 8px;
+ margin-bottom: 1.5rem;
+ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+ transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+
+.goal-item:hover {
+ transform: translateY(-5px);
+ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+.goal-item h4 {
+ font-size: 1.2rem;
+ font-weight: 600;
+ color: #444;
+ margin-bottom: 0.5rem;
+}
+
+
+.goal-item p {
+ color: #666;
+ margin-bottom: 0.5rem;
+}
+
+
+.goal-item button {
+ padding: 0.6rem 1.2rem;
+ border: none;
+ background-color: #7bc8a4;
+ color: white;
+ border-radius: 50px;
+ font-size: 1rem;
+ font-weight: 600;
+ cursor: pointer;
+ transition: background-color 0.2s ease, transform 0.2s ease;
+ margin-right: 1rem;
+}
+
+
+.goal-item button:hover {
+ background-color: #6ba987;
+ transform: scale(1.05);
+}
+
+
+/* Edit and Create Goal Forms */
+.new-goal-form,
+.edit-goal-form {
+ background-color: #fff;
+ padding: 2rem;
+ border-radius: 8px;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ margin-bottom: 2rem;
+}
+
+
+input,
+textarea {
+ width: 100%;
+ padding: 0.8rem;
+ margin-bottom: 1rem;
+ border: 1px solid #ddd;
+ border-radius: 4px;
+ font-size: 1rem;
+}
+
+
+input[type="number"] {
+ -moz-appearance: textfield;
+}
+
+
+input[type="date"] {
+ padding: 0.6rem;
+}
+
+
+textarea {
+ resize: vertical;
+ height: 120px;
+}
+
+
+textarea:focus,
+input:focus {
+ border-color: #3b95b0;
+ outline: none;
+}
+
+
+/* Submit and Cancel Buttons */
+button[type="submit"] {
+   padding: 0.6rem 1.2rem;
+   border: none;
+   background-color: #7bc8a4;
+   color: white;
+   border-radius: 50px;
+   font-size: 1rem;
+   font-weight: 600;
+   cursor: pointer;
+   transition: background-color 0.2s ease, transform 0.2s ease;
+   margin-right: 1rem;
+}
+
+
+button[type="submit"]:hover {
+ background-color: #298fa3;
+ transform: scale(1.05);
+}
+
+
+button[type="button"] {
+ background-color: #6c757d;
+ color: white;
+ width: 100%;
+ padding: 1rem;
+ border-radius: 50px;
+ font-size: 1rem;
+ font-weight: 600;
+ cursor: pointer;
+ transition: background-color 0.3s ease;
+ margin-top: 0.5rem;
+}
+
+
+button[type="button"]:hover {
+ background-color: #5a6268;
+}
+
+
+.completed {
+ background-color: #f0f9f9;
+}
+
+
+.completed button {
+ background-color: #ff6348;
+}
+
+
+.new-goal-form input,
+.new-goal-form textarea,
+.edit-goal-form input,
+.edit-goal-form textarea {
+ width: 100%;
+}
+
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+ .goal-item {
+   flex-direction: column;
+   align-items: flex-start;
+ }
+
+
+ .goal-item button {
+   margin-top: 0.5rem;
+   width: 100%;
+ }
+
+
+ .new-goal-form,
+ .edit-goal-form {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 1rem;
+ }
+
+
+ .new-goal-form input,
+ .new-goal-form textarea,
+ .edit-goal-form input,
+ .edit-goal-form textarea {
+   width: 100%;
+ }
+}
+
+
+@media (max-width: 768px) {
+ .goal-item {
+   margin-bottom: 1rem;
+ }
+}
+
+
