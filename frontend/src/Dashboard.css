@@ -1,3 +1,33 @@
+/* Dark Mode for Dashboard */
+body.dark-mode .dashboard-container {
+    background-color: #1e1e1e; /* Dimmed dark gray */
+    color: #dbe2ef; /* Light text color for better contrast */
+  }
+  
+  body.dark-mode .right-section,
+  body.dark-mode .weekly-averages,
+  body.dark-mode .daily-average,
+  body.dark-mode .popup-content {
+    background-color: #2a2a2a; /* Slightly lighter gray for content */
+    color: #dbe2ef; /* Light text color */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  }
+  
+  body.dark-mode .nav-bar {
+    background-color: #2e4c6d; /* Rich dark blue for nav bar */
+    color: #dbe2ef; /* Light nav text color */
+  }
+  
+  body.dark-mode .date-link {
+    background-color: #333333; /* Dimmed background for links */
+    color: #dbe2ef; /* Light text color */
+  }
+  
+  body.dark-mode .date-link:hover {
+    background-color: #444444; /* Slightly brighter hover state */
+  }
+  
+
 .dashboard-container {
     min-height: 100vh;
     background-color: #ffffff;
@@ -341,4 +371,3 @@ h2 {
     transform: none;
     box-shadow: none;
 }
-
