@@ -9,7 +9,6 @@ Welcome to **EconoMe**, your one-stop solution for tracking expenses, setting fi
 ✨ **User Authentication**: Secure login and signup via Auth0.  
 ✨ **Expense Tracking**: Add, categorize, and track your daily expenses.  
 ✨ **Goal Setting**: Create, update, and monitor financial goals with progress tracking.  
-✨ **Daily Reminders**: Opt-in for daily email reminders to keep you on track.  
 ✨ **Price Comparison**: Compare prices of similar products to maximize savings.  
 ✨ **Responsive UI**: Beautiful, easy-to-navigate interface.
 
@@ -69,7 +68,6 @@ db_user=<your-database-user>
 db_pass=<your-database-password>
 db_name=<your-database-name>
 OPENAI_API_KEY=<your-openai-api-key>
-EMAIL_API=<your-mailersend-api-key>
 REACT_APP_AUTH0_DOMAIN=<your-auth0-domain>
 REACT_APP_AUTH0_CLIENT_ID=<your-auth0-client-id>
 REACT_APP_AUTH0_AUDIENCE=<your-auth0-audience>
@@ -98,7 +96,6 @@ Open [http://localhost:3000](http://localhost:3000) to view the app locally.
 - **Frontend**: React, React Router, Auth0, Axios
 - **Backend**: FastAPI, MySQL
 - **Database**: MySQL
-- **Email Service**: MailerSend
 - **AI Integration**: OpenAI API for price comparisons
 
 ---
