@@ -10,6 +10,7 @@ const Goals = () => {
     title: '',
     description: '',
     target_amount: '',
+    current_amount: '',
     deadline: '',
   });
   const [editGoal, setEditGoal] = useState(null);  
@@ -62,6 +63,7 @@ const Goals = () => {
         title: newGoal.title,
         description: newGoal.description,
         target_amount: parseFloat(newGoal.target_amount),
+        current_amount: parseFloat(newGoal.current_amount),
         deadline: newGoal.deadline,
       };
       console.log('Sending goal data:', goalData);
@@ -71,7 +73,7 @@ const Goals = () => {
           'Content-Type': 'application/json',
         },
       });
-      setNewGoal({ title: '', description: '', target_amount: '', deadline: '' });
+      setNewGoal({ title: '', description: '', target_amount: '', current_amount: '', deadline: '' });
       fetchGoals();
     } catch (error) {
       console.error('Error creating goal:', error);
@@ -100,6 +102,7 @@ const Goals = () => {
         title: editGoal.title || "",
         description: editGoal.description || "",
         target_amount: parseFloat(editGoal.target_amount) || 0,
+        current_amount: parseFloat(editGoal.current_amount),
         due_date: editGoal.deadline || "",
       };
   
@@ -108,6 +111,7 @@ const Goals = () => {
         title: editGoal.title,
         description: editGoal.description,
         target_amount: parseFloat(editGoal.target_amount),
+        current_amount: parseFloat(editGoal.current_amount),
         due_date: editGoal.deadline,
       });
       
@@ -162,6 +166,14 @@ const Goals = () => {
           required
         />
         <input
+          type="number"
+          name="current_amount"
+          value={newGoal.current_amount}
+          onChange={handleInputChange}
+          placeholder="Current Amount"
+          required
+        />
+        <input
           type="date"
           name="deadline"
           value={newGoal.deadline}
@@ -178,7 +190,7 @@ const Goals = () => {
             <h4>{goal.title}</h4>
             <p>{goal.description}</p>
             <p>Target: ${goal.target_amount}</p>
-            <p>Current: ${goal.current_amount || 0}</p>
+            <p>Current: ${goal.current_amount}</p>
             <p>Deadline: {new Date(goal.due_date).toLocaleDateString()}</p>
             <button onClick={() => handleDelete(goal.goal_id)}>Delete</button>
             <button
@@ -186,6 +198,7 @@ const Goals = () => {
                 setEditGoal({
                   ...goal,
                   target_amount: goal.target_amount || '',
+                  current_amount: goal.current_amount || '',
                   title: goal.title || '',
                   description: goal.description || '',
                   deadline: goal.due_date || '',
@@ -218,6 +231,13 @@ const Goals = () => {
               value={editGoal.target_amount || ""}
               onChange={handleEditInputChange}
               placeholder="Target Amount"
+            />
+            <input
+              type="number"
+              name="current_amount"
+              value={editGoal.current_amount || ""}
+              onChange={handleEditInputChange}
+              placeholder="Current Amount"
             />
             <input
               type="date"
