@@ -257,3 +257,21 @@ body.dark-mode {
   --button-background: #1b3a57; /* Dark Blue for Buttons */
   --button-hover: #27496d; /* Slightly lighter blue for hover */
 }
+
+.dark-mode-toggle {
+  background: none; /* Remove background */
+  border: none; /* Remove border */
+  color: inherit; /* Match text color with navigation links */
+  font-size: 1rem; /* Match font size */
+  font-weight: 500; /* Match font weight */
+  cursor: pointer;
+  text-decoration: none; /* Remove underline */
+  margin-right: 1rem; /* Adjust spacing between links */
+  transition: color 0.2s ease; /* Add smooth hover transition */
+}
+
+.dark-mode-toggle:hover {
+  color: #008B9C; /* Match hover color of nav links */
+}
+
+
