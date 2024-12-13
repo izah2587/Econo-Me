@@ -479,9 +479,6 @@ async def update_goal(goal_id: int, goal: GoalUpdate, token: str = Depends(oauth
         if not existing_goal:
             raise HTTPException(status_code=404, detail="Goal not found or does not belong to the user")
         
-        # Debug: Log the data received from the frontend
-        print(f"Payload received for update: {goal.dict(exclude_unset=True)}")
-
         # Prepare update query
         update_fields = []
         values = []
@@ -489,10 +486,17 @@ async def update_goal(goal_id: int, goal: GoalUpdate, token: str = Depends(oauth
             update_fields.append(f"{field} = %s")
             values.append(value)
         
+        # Check if current_amount equals target_amount and update the status
+        if 'current_amount' in goal.dict(exclude_unset=True):
+            new_current = goal.current_amount
+            if new_current == existing_goal['target_amount']:
+                update_fields.append("status = %s")
+                values.append("completed")
+
         if update_fields:
             query = f"UPDATE Goals SET {', '.join(update_fields)} WHERE goal_id = %s"
             values.append(goal_id)
-            print(f"Executing query: {query} with values: {values}")  # Debug the query and its values
+            print(f"Executing query: {query} with values: {values}")
             cursor.execute(query, tuple(values))
             conn.commit()
 
