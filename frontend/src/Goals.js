@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-import './Goals.css'
+import Confetti from 'react-confetti'; // Import the confetti library
+import './Goals.css';
 
 const Goals = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -10,10 +11,12 @@ const Goals = () => {
     title: '',
     description: '',
     target_amount: '',
+    current_amount: '',
     deadline: '',
   });
   const [editGoal, setEditGoal] = useState(null);  
   const [error, setError] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false); // State for confetti animation
 
   const fetchGoals = async () => {
     try {
@@ -30,6 +33,7 @@ const Goals = () => {
         active: allGoals.filter((goal) => goal.status === "active"),
         completed: allGoals.filter((goal) => goal.status === "completed"),
       });
+      console.log("Completed goals:", goals.completed);
     } catch (error) {
       console.error("Error fetching goals:", error);
       setError("Failed to fetch goals. Please try again later.");
@@ -62,6 +66,7 @@ const Goals = () => {
         title: newGoal.title,
         description: newGoal.description,
         target_amount: parseFloat(newGoal.target_amount),
+        current_amount: parseFloat(newGoal.current_amount),
         deadline: newGoal.deadline,
       };
       console.log('Sending goal data:', goalData);
@@ -71,7 +76,7 @@ const Goals = () => {
           'Content-Type': 'application/json',
         },
       });
-      setNewGoal({ title: '', description: '', target_amount: '', deadline: '' });
+      setNewGoal({ title: '', description: '', target_amount: '', current_amount: '', deadline: '' });
       fetchGoals();
     } catch (error) {
       console.error('Error creating goal:', error);
@@ -100,16 +105,11 @@ const Goals = () => {
         title: editGoal.title || "",
         description: editGoal.description || "",
         target_amount: parseFloat(editGoal.target_amount) || 0,
+        current_amount: parseFloat(editGoal.current_amount),
         due_date: editGoal.deadline || "",
       };
   
       console.log("Updating goal data:", updatedFields);
-      console.log("Payload sent to backend:", {
-        title: editGoal.title,
-        description: editGoal.description,
-        target_amount: parseFloat(editGoal.target_amount),
-        due_date: editGoal.deadline,
-      });
       
       await axios.put(
         `https://econome-backend-102803836636.us-central1.run.app/goals/${editGoal.goal_id}`,
@@ -122,8 +122,13 @@ const Goals = () => {
         }
       );
   
-      // Refresh goals after confirming update
-      setTimeout(() => fetchGoals(), 500); // Add a delay
+      // Check if the goal is completed
+      if (updatedFields.current_amount === updatedFields.target_amount) {
+        setShowConfetti(true); // Trigger confetti animation
+        setTimeout(() => setShowConfetti(false), 5000); // Stop confetti after 5 seconds
+      }
+
+      fetchGoals(); // Refresh goals
       setEditGoal(null); // Clear edit state after refresh
 
     } catch (error) {
@@ -134,6 +139,7 @@ const Goals = () => {
   
   return (
     <div className="goals-container">
+      {showConfetti && <Confetti />} {/* Confetti animation */}
       {error && <div className="error">{error}</div>}
       <h3>Set New Goal</h3>
   
@@ -162,6 +168,14 @@ const Goals = () => {
           required
         />
         <input
+          type="number"
+          name="current_amount"
+          value={newGoal.current_amount}
+          onChange={handleInputChange}
+          placeholder="Current Amount"
+          required
+        />
+        <input
           type="date"
           name="deadline"
           value={newGoal.deadline}
@@ -178,7 +192,7 @@ const Goals = () => {
             <h4>{goal.title}</h4>
             <p>{goal.description}</p>
             <p>Target: ${goal.target_amount}</p>
-            <p>Current: ${goal.current_amount || 0}</p>
+            <p>Current: ${goal.current_amount}</p>
             <p>Deadline: {new Date(goal.due_date).toLocaleDateString()}</p>
             <button onClick={() => handleDelete(goal.goal_id)}>Delete</button>
             <button
@@ -186,6 +200,7 @@ const Goals = () => {
                 setEditGoal({
                   ...goal,
                   target_amount: goal.target_amount || '',
+                  current_amount: goal.current_amount || '',
                   title: goal.title || '',
                   description: goal.description || '',
                   deadline: goal.due_date || '',
@@ -220,6 +235,13 @@ const Goals = () => {
               placeholder="Target Amount"
             />
             <input
+              type="number"
+              name="current_amount"
+              value={editGoal.current_amount || ""}
+              onChange={handleEditInputChange}
+              placeholder="Current Amount"
+            />
+            <input
               type="date"
               name="deadline"
               value={editGoal.deadline || ""}
@@ -233,6 +255,7 @@ const Goals = () => {
         )}
   
         <h3>Completed Goals</h3>
+        {console.log("Completed goals:", goals.completed)} {/* Debug log */}
         {goals.completed.map((goal) => (
           <div key={goal.goal_id} className="goal-item completed">
             <h4>{goal.title}</h4>
