@@ -43,7 +43,7 @@ app = FastAPI()
 # CORS settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://econome-frontend-102803836636.us-central1.run.app"],
+    allow_origins=["https://econome-frontend-102803836636.us-central1.run.app", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -828,7 +828,7 @@ async def get_ai_review(token: str = Depends(oauth2_scheme)):
         Your response should include:
 
         1. A brief overview of their current financial situation.
-        2. An explanation of their goal alignment percentage and what it means. calculate the goal alignment and give a specific value like Goal Alignment: 75%.
+        2. An explanation of their goal alignment percentage and what it means. calculate the goal alignment and give a specific value like Goal Alignment: 75%. explain how it is calculated as well.
         3. Specific recommendations for each goal, considering their current spending habits.
         4. A checklist of 3-5 actionable items to improve their financial situation.
         5. Encouragement and positive reinforcement for any good financial habits observed.
