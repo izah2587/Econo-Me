@@ -18,6 +18,10 @@ from typing import Optional, List, Dict, Any, Union
 from fastapi.params import Query
 from typing import Optional
 from collections import defaultdict
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 # Load environment variables
@@ -326,6 +330,7 @@ def read_products_from_csv(file_path: str) -> pd.DataFrame:
 
 # Price comparison function using OpenAI
 def generate_price_comparison_summary(target_df: pd.DataFrame, trader_joes_df: pd.DataFrame) -> str:
+    logger.debug(f"OPENAI_API_KEY is {'set' if os.getenv('OPENAI_API_KEY') else 'not set'}")
     # Convert DataFrames to a string format for OpenAI
     target_products_str = target_df.to_dict(orient='records')
     trader_joes_products_str = trader_joes_df.to_dict(orient='records')
