@@ -186,31 +186,46 @@ const Goals = () => {
       </form>
   
       <div key={JSON.stringify(goals.active)} className="goals-list">
-        <h3>Active Goals</h3>
-        {goals.active.map((goal) => (
-          <div key={goal.goal_id} className="goal-item">
-            <h4>{goal.title}</h4>
-            <p>{goal.description}</p>
-            <p>Target: ${goal.target_amount}</p>
-            <p>Current: ${goal.current_amount}</p>
-            <p>Deadline: {new Date(goal.due_date).toLocaleDateString()}</p>
-            <button onClick={() => handleDelete(goal.goal_id)}>Delete</button>
-            <button
-              onClick={() =>
-                setEditGoal({
-                  ...goal,
-                  target_amount: goal.target_amount || '',
-                  current_amount: goal.current_amount || '',
-                  title: goal.title || '',
-                  description: goal.description || '',
-                  deadline: goal.due_date || '',
-                })
-              }
-            >
-              Edit
-            </button>
-          </div>
-        ))}
+      <h3>Active Goals</h3>
+{goals.active.map((goal) => {
+  const progress = Math.min((goal.current_amount / goal.target_amount) * 100, 100); // Ensure max progress is 100%
+
+  return (
+    <div key={goal.goal_id} className="goal-item">
+      <h4>{goal.title}</h4>
+      <p>{goal.description}</p>
+      <p>Target: ${goal.target_amount}</p>
+      <p>Current: ${goal.current_amount}</p>
+      <p>Deadline: {new Date(goal.due_date).toLocaleDateString()}</p>
+
+      {/* Progress Bar */}
+      <div className="progress-bar-container">
+        <div
+          className="progress-bar-fill"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+      <p className="progress-percentage">{progress.toFixed(0)}% Complete</p>
+
+      <button onClick={() => handleDelete(goal.goal_id)}>Delete</button>
+      <button
+        onClick={() =>
+          setEditGoal({
+            ...goal,
+            target_amount: goal.target_amount || '',
+            current_amount: goal.current_amount || '',
+            title: goal.title || '',
+            description: goal.description || '',
+            deadline: goal.due_date || '',
+          })
+        }
+      >
+        Edit
+      </button>
+    </div>
+  );
+})}
+
         {editGoal && (
           <form onSubmit={handleEditSubmit} className="edit-goal-form">
             <h3>Edit Goal</h3>
