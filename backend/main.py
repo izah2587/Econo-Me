@@ -67,7 +67,7 @@ class Goal(BaseModel):
     set_date: date
     due_date: date
     goal_type: Optional[str] = None
-    current_amount: Optional[float] = None
+    current_amount: float
     target_amount: float
     auth0_id: str
     user_id: int
@@ -76,12 +76,14 @@ class GoalCreate(BaseModel):
     title: str
     description: str
     target_amount: float
+    current_amount: float
     deadline: date
 
 class GoalUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     target_amount: Optional[float] = None
+    current_amount: Optional[float] = None
     due_date: Optional[date] = None
     status: Optional[str] = None
 
@@ -410,8 +412,8 @@ async def create_goal(request: Request, goal: GoalCreate, token: str = Depends(o
         
         # Now insert into Goals table
         query = """
-        INSERT INTO Goals (status, set_date, due_date, goal_type, target_amount, auth0_id, user_id, title, description)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO Goals (status, set_date, due_date, goal_type, target_amount, current_amount, auth0_id, user_id, title, description)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
         """
         values = (
             'active',
@@ -419,6 +421,7 @@ async def create_goal(request: Request, goal: GoalCreate, token: str = Depends(o
             goal.deadline,
             None,  # goal_type is not provided in GoalCreate
             goal.target_amount,
+            goal.current_amount or 0,
             user_payload["sub"],
             user_id,  # Now using the fetched user_id
             goal.title,
