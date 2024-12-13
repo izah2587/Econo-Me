@@ -232,3 +232,28 @@ body {
   }
 }
 
+/* Default Light Mode Variables */
+body {
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --card-background: #f8f9fa;
+  --nav-background: #008B9C;
+  --button-background: #7BC8A4;
+  --button-text-color: #ffffff;
+  --link-color: #008B9C;
+  --border-color: #dddddd;
+
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --background-color: #0a1b2a; /* Dark Navy Blue */
+  --text-color: #dbe2ef; /* Soft Light Blue for Text */
+  --card-background: #102a43; /* Muted Dark Blue */
+  --nav-background: #2e4c6d; /* Rich Darker Blue for Navigation */
+  --button-background: #1b3a57; /* Dark Blue for Buttons */
+  --button-hover: #27496d; /* Slightly lighter blue for hover */
+}

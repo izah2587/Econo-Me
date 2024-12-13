@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dashboard from './Dashboard';
@@ -9,6 +9,19 @@ import './App.css';
 
 const App = () => {
   const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0();
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
+
+  // Apply dark mode class to body
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', darkMode);
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   if (isLoading) {
     return (
@@ -57,6 +70,9 @@ const App = () => {
                   <Link to="/marketplace">Marketplace</Link>
                   <Link to="/goals">Goals</Link>
                   <Link to="/profile">Profile</Link>
+                  <button onClick={toggleDarkMode} className="dark-mode-toggle">
+                    {darkMode ? 'Light Mode' : 'Dark Mode'}
+                  </button>
                   <button onClick={() => logout({ returnTo: window.location.origin })} className="logout-button">
                     Logout
                   </button>
