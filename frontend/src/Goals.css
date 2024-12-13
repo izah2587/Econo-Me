@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-
 * {
  margin: 0;
  padding: 0;
@@ -241,4 +240,171 @@ button[type="button"]:hover {
  }
 }
 
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --background-color: #1e1e1e; /* Dimmed background */
+  --card-background: #2a2a2a; /* Dimmed card background */
+  --text-color: #dbe2ef; /* Soft light blue text */
+  --heading-color: #3b95b0; /* Maintain primary color */
+  --button-color: #3b95b0; /* Buttons with consistent primary blue */
+  --button-hover: #298fa3; /* Darker hover for buttons */
+  --border-color: #444444; /* Input and textarea borders */
+}
+
+
+/* General Reset */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--background-color, white);
+  color: var(--text-color, #333);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Goals Container */
+.goals-container {
+  background-color: var(--card-background, white);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h2, h3 {
+  color: var(--heading-color, #3b95b0);
+}
+
+/* Goal Item Card */
+.goal-item {
+  background-color: var(--card-background, #fff);
+  color: var(--text-color, #333);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.goal-item h4 {
+  color: var(--text-color, #444);
+}
+
+.goal-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Buttons */
+.goal-item button, button[type="submit"] {
+  background-color: var(--button-color, #7bc8a4);
+  color: white;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.goal-item button:hover, button[type="submit"]:hover {
+  background-color: var(--button-hover, #6ba987);
+  transform: scale(1.05);
+}
+
+/* Forms */
+.new-goal-form,
+.edit-goal-form {
+  background-color: var(--card-background, #fff);
+  color: var(--text-color, #333);
+  border: 1px solid var(--border-color, #ddd);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Inputs and Textarea */
+input,
+textarea {
+  background-color: var(--background-color, white);
+  color: var(--text-color, #333);
+  border: 1px solid var(--border-color, #ddd);
+  transition: border-color 0.2s ease;
+}
+
+textarea:focus,
+input:focus {
+  border-color: var(--heading-color, #3b95b0);
+}
+
+/* Error Message */
+.error {
+  background-color: #8b323a; /* Darker red for dark mode */
+  color: #f1c4c4;
+  border: 1px solid #b74d56;
+}
+
+/* Completed Goals */
+.completed {
+  background-color: #27343a; /* Dimmed completed background */
+}
+
+.completed button {
+  background-color: #ff6348;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .goal-item {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .goal-item {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Completed Goals - Light Mode */
+.completed {
+  background-color: #e6f7ff; /* Light blue background for completed goals */
+  color: #333; /* Standard text color for readability */
+}
+
+/* Buttons inside Completed Goals */
+.completed button {
+  background-color: #ff6348; /* Bright red for consistency */
+  color: white;
+}
+
+/* Hover Effect for Buttons */
+.completed button:hover {
+  background-color: #e55340; /* Slightly darker red on hover */
+  transform: scale(1.05);
+}
+
+/* Completed Goals - Dark Mode */
+body.dark-mode .completed {
+  background-color: #e6f7ff; /* Keep it light even in dark mode */
+  color: #333; /* Ensure text remains dark */
+}
+
+body.dark-mode .completed button {
+  background-color: #ff6348; /* Consistent button color */
+  color: white;
+}
+
+body.dark-mode .completed button:hover {
+  background-color: #e55340; /* Slightly darker red on hover */
+}
+
+/* General Goals Item - Default Styling */
+.goal-item {
+  background-color: #fff; /* Default white background for goals */
+  color: #333; /* Default text color */
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+/* Goals Container - Dark Mode Support */
+body.dark-mode .goal-item {
+  background-color: #2a2a2a; /* Dimmed background for regular goals in dark mode */
+  color: #dbe2ef; /* Light text color */
+}
 
